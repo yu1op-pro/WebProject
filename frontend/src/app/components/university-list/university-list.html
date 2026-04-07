@@ -1,0 +1,25 @@
+<div class="search-panel">
+  <input type="number" [(ngModel)]="userGpa" placeholder="Введите GPA">
+  <input type="number" [(ngModel)]="userIelts" placeholder="Введите IELTS">
+  
+  <button (click)="fetchUniversities()">Рассчитать шансы</button>
+</div>
+
+@if (errorMessage) {
+  <p class="error">{{ errorMessage }}</p>
+}
+
+<div class="university-container">
+  @for (uni of universities; track uni.id) {
+    <div class="card">
+      <h3>{{ uni.name }}</h3>
+      <p>Минимальный GPA: {{ uni.min_gpa }}</p>
+      
+      @if (uni.admission_chance) {
+        <p class="chance">Ваш шанс: <strong>{{ uni.admission_chance }}</strong></p>
+      }
+    </div>
+  } @empty {
+    <p>Университеты не найдены.</p>
+  }
+</div>
