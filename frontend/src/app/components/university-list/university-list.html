@@ -1,25 +1,44 @@
-<div class="search-panel">
-  <input type="number" [(ngModel)]="userGpa" placeholder="Введите GPA">
-  <input type="number" [(ngModel)]="userIelts" placeholder="Введите IELTS">
-  
-  <button (click)="fetchUniversities()">Рассчитать шансы</button>
-</div>
-
-@if (errorMessage) {
-  <p class="error">{{ errorMessage }}</p>
-}
-
-<div class="university-container">
-  @for (uni of universities; track uni.id) {
-    <div class="card">
-      <h3>{{ uni.name }}</h3>
-      <p>Минимальный GPA: {{ uni.min_gpa }}</p>
-      
-      @if (uni.admission_chance) {
-        <p class="chance">Ваш шанс: <strong>{{ uni.admission_chance }}</strong></p>
-      }
+<div class="page-container">
+  <header class="hero">
+    <h1>Глобальный поиск университетов 🌍</h1>
+    <p class="subtitle">Найдите лучшее место для обучения на основе ваших достижений</p>
+    <div class="user-stats">
+      <div class="stat-item">
+        <label>Ваш GPA</label>
+        <input type="number" [(ngModel)]="myGpa" (change)="fetchUniversities()">
+      </div>
+      <div class="stat-item">
+        <label>IELTS</label>
+        <input type="number" [(ngModel)]="myIelts" (change)="fetchUniversities()">
+      </div>
     </div>
-  } @empty {
-    <p>Университеты не найдены.</p>
-  }
+  </header>
+
+  <div class="uni-grid">
+    @for (uni of universities; track uni.id) {
+      <div class="uni-card">
+        <div class="card-header">
+          <h3>{{ uni.name }}</h3>
+          <span class="location">📍 {{ uni.location || 'Международный' }}</span>
+        </div>
+        
+        <div class="card-content">
+          <div class="req-box">
+            <small>Мин. GPA</small>
+            <p>{{ uni.min_gpa }}</p>
+          </div>
+          <div class="chance-indicator">
+            <div class="progress-bar">
+              <div class="fill" [style.width.%]="calculateChance(uni)"></div>
+            </div>
+            <span>Шанс: {{ calculateChance(uni) }}%</span>
+          </div>
+        </div>
+
+        <button class="apply-btn" (click)="apply(uni.id)">
+          Подать заявку
+        </button>
+      </div>
+    }
+  </div>
 </div>

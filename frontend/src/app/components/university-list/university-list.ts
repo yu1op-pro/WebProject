@@ -1,24 +1,22 @@
 import { Component, OnInit } from '@angular/core';
 import { ApiService } from '../../services/api.service';
-import { University } from '../../models/university.model';
-import { FormsModule } from '@angular/forms'; // Важно для ngModel
+import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-university-list',
   standalone: true,
   imports: [FormsModule, CommonModule],
-  // БЫЛО: templateURL: './university-list.component.html'
-  // СТАЛО:
   templateUrl: './university-list.html', 
   styleUrl: './university-list.css'
 })
 export class UniversityListComponent implements OnInit {
-  universities: University[] = [];
-  // Пункт 3: начальные значения для [(ngModel)]
-  userGpa: string = '3.69'; 
-  userIelts: string = '7.5';
-  errorMessage: string = '';
+  universities: any[] = [];
+  errorMessage: string = ''; // Добавили для Пункта 9
+
+  // Эти переменные должны совпадать и в классе, и в методе, и в HTML
+  myGpa: number = 3.69; 
+  myIelts: number = 7.5;
 
   constructor(private apiService: ApiService) {}
 
@@ -26,22 +24,29 @@ export class UniversityListComponent implements OnInit {
     this.fetchUniversities();
   }
   
-  apply(universityId: number) {
-  this.apiService.createApplication(universityId).subscribe({
-    next: (res) => alert('Заявка успешно создана!'),
-    error: (err) => alert('Ошибка! Возможно, вы не авторизованы.')
-  });
-}
+  // Метод для расчета шансов (нужен для твоего красивого дизайна)
+  calculateChance(uni: any): number {
+    if (this.myGpa >= uni.min_gpa) return 100;
+    const diff = uni.min_gpa - this.myGpa;
+    if (diff > 0.5) return 30;
+    return Math.round(100 - (diff * 100));
+  }
 
-  // Пункт 2: метод, который сработает по клику
+  apply(universityId: number) {
+    this.apiService.createApplication(universityId).subscribe({
+      next: (res) => alert('Заявка успешно создана!'),
+      error: (err) => alert('Ошибка! Возможно, вы не авторизованы.')
+    });
+  }
+
   fetchUniversities() {
-    this.apiService.getUniversities(this.userGpa, this.userIelts).subscribe({
+    // Используем именно this.myGpa и this.myIelts
+    this.apiService.getUniversities(this.myGpa, this.myIelts).subscribe({
       next: (data) => {
         this.universities = data;
         this.errorMessage = '';
       },
       error: (err) => {
-        // Пункт 9: Обработка ошибок
         this.errorMessage = 'Не удалось загрузить данные. Проверьте соединение с бэкендом.';
         console.error(err);
       }
