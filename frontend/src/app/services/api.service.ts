@@ -10,7 +10,7 @@ export class ApiService {
   constructor(private http: HttpClient) {}
 
   // Получение вузов с расчетом шансов
-  getUniversities(gpa?: string, ielts?: string): Observable<University[]> {
+  getUniversities(gpa?: number, ielts?: number): Observable<University[]> {
     let params = new HttpParams();
     if (gpa) params = params.append('gpa', gpa);
     if (ielts) params = params.append('ielts', ielts);
