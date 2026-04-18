@@ -1,0 +1,47 @@
+<section class="auth-page">
+  <div class="auth-card">
+    <div class="badge">Academic Mobility Portal</div>
+    <h1>Login with your KBTU account</h1>
+    <p class="lead">
+      Use your university email to submit applications, track your status, and explore
+      universities that match your GPA and English level.
+    </p>
+
+    <form class="auth-form" (ngSubmit)="submitLogin()">
+      <label>
+        <span>KBTU email</span>
+        <input
+          type="email"
+          name="email"
+          [(ngModel)]="email"
+          placeholder="example@kbtu.kz"
+          required
+        />
+      </label>
+
+      <label>
+        <span>Password</span>
+        <input
+          type="password"
+          name="password"
+          [(ngModel)]="password"
+          placeholder="Enter your password"
+          required
+        />
+      </label>
+      @if (errorMessage) {
+        <p class="message error">{{ errorMessage }}</p>
+      }
+      @if (successMessage) {
+        <p class="message success">{{ successMessage }}</p>
+      }
+      <button type="submit" [disabled]="loading">
+        {{ loading ? 'Signing in...' : 'Login' }}
+      </button>
+    </form>
+
+    <div class="hint-box">
+      <p><strong>Sign in:</strong> enter your KBTU email in the field above to access applications.</p>
+    </div>
+  </div>
+</section>

@@ -1,0 +1,30 @@
+<div class="app-shell">
+  <header class="topbar">
+    <div class="logo">
+      <img src="kbtu-logo.png" alt="KBTU Logo" class="logo-img" />
+
+      <div>
+        <strong>Way to Dream</strong>
+        <br>
+        <small>KBTU Academic Mobility Portal</small>
+      </div>
+    </div>
+
+    <nav class="nav-links">
+      <a routerLink="/universities" routerLinkActive="active">Universities</a>
+      <a routerLink="/applications" routerLinkActive="active">Applications</a>
+      <a routerLink="/login" routerLinkActive="active">Login</a>
+    </nav>
+
+    <div class="profile-box">
+      @if (isLoggedIn) {
+        <span>Hello, {{ username }}</span>
+        <button type="button" (click)="logout()">Logout</button>
+      }
+    </div>
+  </header>
+
+  <main>
+    <router-outlet></router-outlet>
+  </main>
+</div>

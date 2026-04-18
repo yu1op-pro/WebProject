@@ -1,0 +1,151 @@
+<section class="page-container">
+  <div class="hero-card">
+    <div class="hero-text">
+      <p class="eyebrow">Study abroad smarter</p>
+      <h1>Find the right university for your profile</h1>
+      <p>
+        Compare options by GPA, IELTS, and faculty availability, check your estimated admission
+        chance, and send an application in one click.
+      </p>
+    </div>
+
+    <div class="stats-grid">
+      <article>
+        <strong>{{ stats.total_universities }}</strong>
+        <span>universities</span>
+      </article>
+      <article>
+        <strong>{{ stats.total_countries }}</strong>
+        <span>countries</span>
+      </article>
+      <article>
+        <strong>{{ filteredUniversities.length }}</strong>
+        <span>visible matches</span>
+      </article>
+    </div>
+  </div>
+
+  <section class="filter-card">
+    <div class="filters-header">
+      <div>
+        <h2>Student profile</h2>
+      </div>
+      <div class="actions-row">
+        <button type="button" class="secondary-btn" (click)="fetchUniversities()">Check chances</button>
+        <button type="button" class="ghost-btn" (click)="clearFilters()">Clear search</button>
+      </div>
+    </div>
+
+    <div class="filter-grid">
+      <label>
+        <span>GPA</span>
+        <input type="number" step="0.1" [(ngModel)]="gpa" name="gpa" />
+      </label>
+
+      <label>
+        <span>IELTS</span>
+        <input type="number" step="0.5" [(ngModel)]="ielts" name="ielts" />
+      </label>
+
+      <label>
+        <span>Country</span>
+        <input
+          type="text"
+          [(ngModel)]="countryFilter"
+          name="countryFilter"
+          placeholder="e.g. Korea"
+          (input)="applyLocalFilters()"
+        />
+      </label>
+
+      <label>
+        <span>Faculty</span>
+        <input
+          type="text"
+          [(ngModel)]="facultyFilter"
+          name="facultyFilter"
+          placeholder="e.g. SITE"
+          (input)="applyLocalFilters()"
+        />
+      </label>
+
+      <label>
+        <span>Search</span>
+        <input
+          type="text"
+          [(ngModel)]="searchTerm"
+          name="searchTerm"
+          placeholder="University name"
+          (input)="applyLocalFilters()"
+        />
+      </label>
+    </div>
+
+    @if (successMessage) {
+      <p class="message success">{{ successMessage }}</p>
+    }
+  </section>
+
+  @if (isLoading) {
+    <div class="state-box">Loading universities...</div>
+  } @else if (filteredUniversities.length === 0) {
+    <div class="state-box">No universities match your current filters.</div>
+  } @else {
+    <div class="uni-grid">
+      @for (uni of filteredUniversities; track uni.id) {
+        <article class="uni-card">
+          <div class="card-top">
+            <div>
+              <p class="country">{{ uni.country }}</p>
+              <h3>{{ uni.name }}</h3>
+            </div>
+            <span class="tag">{{ getStatusLabel(uni.admission_chance) }}</span>
+          </div>
+
+          <p class="faculty-line"><strong>Faculties:</strong> {{ getFacultyNames(uni) }}</p>
+
+          <div class="requirements">
+            <div>
+              <small>Min GPA</small>
+              <strong>{{ uni.min_gpa }}</strong>
+            </div>
+            <div>
+              <small>Min IELTS</small>
+              <strong>{{ uni.min_ielts }}</strong>
+            </div>
+          </div>
+
+          <div class="chance-box">
+            <div class="chance-row">
+              <span>Admission chance</span>
+              <strong>{{ uni.admission_chance || '—' }}</strong>
+            </div>
+            <div class="progress-bar">
+              <div class="fill" [style.width.%]="getChanceValue(uni.admission_chance)"></div>
+            </div>
+          </div>
+    @if (lastAppliedId === uni.id && successMessage) {
+      <div class="success-message">
+        {{ successMessage }}
+      </div>
+    }
+
+        <button
+          class="apply-btn"
+          type="button"
+          (click)="applyToUniversity(uni.id)"
+          [disabled]="applyingId === uni.id || appliedUniversityIds.includes(uni.id)"
+        >
+          {{
+            applyingId === uni.id
+              ? 'Applying...'
+              : appliedUniversityIds.includes(uni.id)
+              ? 'Applied'
+              : 'Apply now'
+          }}
+        </button>
+        </article>
+      }
+    </div>
+  }
+</section>
